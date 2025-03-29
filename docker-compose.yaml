@@ -1,0 +1,11 @@
+services:
+  app:
+    container_name: investing_scraper
+    build:
+      context: .
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: always
+    command: ["python", "main.py"]
