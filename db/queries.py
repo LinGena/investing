@@ -16,9 +16,9 @@ class Queries(Db):
             return row[0]
         return None
     
-    def change_status(self, id: int) -> None:
-        sql = f"UPDATE {self.table_tasks} SET status = NOT status WHERE id = %s"
-        self.insert(sql, (id,))
+    def change_status(self, id: int, status: bool = False) -> None:
+        sql = f"UPDATE {self.table_tasks} SET status = %s status WHERE id = %s"
+        self.insert(sql, (status, id,))
 
     def update_last_date(self, id: int) -> None:
         sql = f"UPDATE {self.table_tasks} SET last_update = NOW() WHERE id = %s"

@@ -37,7 +37,7 @@ class PageContent(UndetectedDriver):
         except Exception as ex:
             self.logger.error(ex)
         finally:
-            self.queries.change_status(id)
+            self.queries.change_status(id, status=True)
             self.close_driver()
             self._del_folder()
 
