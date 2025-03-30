@@ -24,6 +24,7 @@ class UndetectedDriver():
         self._del_folder()
 
     def open_display(self):
+        os.environ['PYVIRTUALDISPLAY_DISPLAYFD'] = '0'
         self._display = Display(visible=False, size=(1920, 1080))
         self._display.start()
         

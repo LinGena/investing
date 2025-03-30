@@ -29,7 +29,6 @@ class PageContent(UndetectedDriver):
         if not id or not url:
             self.logger.error(f'No ID or URL in the task: {task}')
             return
-        self.queries.change_status(id)
         try:
             result = self.get_result_dict(url)
             if result:

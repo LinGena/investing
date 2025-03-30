@@ -7,7 +7,6 @@ import time
 from config.settings import settings
 
 def first_start():
-    os.environ['PYVIRTUALDISPLAY_DISPLAYFD'] = '0'
     task = Queries().get_task()
     PageContent(first_create=True).get(task)
 
@@ -25,10 +24,11 @@ def main():
             continue
         processes = [p for p in processes if p.is_alive()]
         if len(processes) < settings.driver.max_processes:
+            model.change_status(task['id'])
             p = Process(target=open_browser_instance, args=(task,))
             p.start()
             processes.append(p)
-        time.sleep(1)
+        time.sleep(10)
 
 if __name__ == '__main__':
     IsDbCreated().check()
