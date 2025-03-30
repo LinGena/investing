@@ -94,7 +94,8 @@ class UndetectedDriver():
         except:
             pass
         try:
-            self._display.stop()
+            if hasattr(self,'_display'):
+                self._display.stop()
         except:
             pass 
 
