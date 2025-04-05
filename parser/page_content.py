@@ -26,6 +26,7 @@ class PageContent(UndetectedDriver):
             return
         id = task.get('id')
         url = task.get('url')
+        self.taks = task
         if not id or not url:
             self.logger.error(f'No ID or URL in the task: {task}')
             return
@@ -89,7 +90,15 @@ class PageContent(UndetectedDriver):
                 if count_try > 4:
                     raise Exception('Something wrong. Failed to open the date field.')
                 return self.load_historical_data_page(link, count_try + 1)
-            self.driver.find_element(By.XPATH,xpath).send_keys('01/01/1980')
+            from_date = '01/01/1980'
+            if self.taks.get('from_date', None):
+                from_date = self.taks.get('from_date').strftime('%d/%m/%Y')
+            self.driver.find_element(By.XPATH,xpath).send_keys(from_date)
+            if self.taks.get('to_date', None):
+                time.sleep(1)
+                xpath_to = '(//input[@type="date"])[2]'
+                to_date = self.taks.get('to_date').strftime('%d/%m/%Y')
+                self.driver.find_element(By.XPATH,xpath_to).send_keys(to_date)
             xpath = "//div[contains(@class, 'cursor-pointer') and contains(@class, 'bg-v2-blue')]"
             self.click_element(xpath)
             try:
@@ -130,4 +139,3 @@ class PageContent(UndetectedDriver):
     
     def scroll_by(self, x=0, y=0):
         self.driver.execute_script(f'window.scrollBy({x}, {y});')
-

@@ -80,6 +80,13 @@ class IsDbTable(Db):
             self.create_tasks()
         if self.check_tables(self.table_datas):
             self.create_datas()
+        self.add_missing_fields()
+
+    def add_missing_fields(self) -> None:
+        if self.check_row(self.table_tasks, 'from_date'):
+            self.insert(f"""ALTER TABLE `{self.table_tasks}` ADD COLUMN `from_date` DATE DEFAULT NULL;""")
+        if self.check_row(self.table_tasks, 'to_date'):
+            self.insert(f"""ALTER TABLE `{self.table_tasks}` ADD COLUMN `to_date` DATE DEFAULT NULL;""")
 
     def create_tasks(self) -> None:
         self.insert(f"""
@@ -91,6 +98,7 @@ class IsDbTable(Db):
                 `status` boolean DEFAULT true
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
         """)
+
     
     def create_datas(self) -> None:
         self.insert(f"""
@@ -110,5 +118,14 @@ class IsDbTable(Db):
         sql = f"SHOW TABLES FROM {settings.db.db_database} LIKE '{table_name}'"
         rows = self.select(sql)
         if len(rows) == 0:
+            return True
+        return False
+    
+    def check_row(self, table_name: str, row_name: str) -> bool:
+        row_exists = self.select(f"""SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.COLUMNS 
+                                  WHERE table_schema = DATABASE()
+                                  AND table_name = '{table_name}'
+                                  AND column_name = '{row_name}';""")
+        if row_exists[0][0] == 0:
             return True
         return False

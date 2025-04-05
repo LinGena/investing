@@ -7,7 +7,7 @@ class Queries(Db):
         super().__init__()
 
     def get_task(self) -> dict:
-        sql = f"""SELECT id, url FROM {self.table_tasks} 
+        sql = f"""SELECT id, url, from_date, to_date FROM {self.table_tasks} 
         WHERE status=true AND (last_update IS NULL OR last_update < NOW() - INTERVAL 1 DAY)
         ORDER BY RAND()
         LIMIT 1"""
