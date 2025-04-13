@@ -55,6 +55,7 @@ class UndetectedDriver():
         self.__options.add_argument('--ignore-certificate-errors')
         self.__options.add_argument('--start-maximized')
         self.__options.add_argument('--no-sandbox')
+        self.__options.add_argument('--disable-application-cache')
         self.__options.add_argument('--disable-dev-shm-usage')
         self.__options.add_argument('--disable-setuid-sandbox')
         self.__options.add_argument('--disable-gpu')

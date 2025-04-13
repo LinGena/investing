@@ -11,6 +11,7 @@ from parser.get_key_statistic import GetKeyStatistic
 from parser.get_profile import GetProfileData
 from parser.get_historical_data import GetHistoricalData
 from db.queries import Queries
+from selenium.webdriver.common.keys import Keys
 
 
 class PageContent(UndetectedDriver):
@@ -68,6 +69,7 @@ class PageContent(UndetectedDriver):
     def load_historical_data_page(self, link: str, count_try: int = 0) -> bool:
         self.driver.get(link)
         try:
+            time.sleep(2)
             today_date = datetime.utcnow().strftime("%m/%d/%Y")
             xpath_periods = f'//div[contains(text(), "{today_date}") or contains(text(), " - ")]'
             self.click_element(xpath_periods)
@@ -82,23 +84,25 @@ class PageContent(UndetectedDriver):
                 pass
             xpath = '//input[@type="date"]'
             if not self.driver.find_elements(By.XPATH,xpath):
+                element_periods = self.driver.find_element(By.XPATH, xpath_periods)
+                self.driver.execute_script("arguments[0].removeAttribute('readonly')", element_periods)
                 self.click_element(xpath_periods)
                 time.sleep(2)
             try:
                 self.wait(3, (By.XPATH, xpath))
             except TimeoutException:
-                if count_try > 4:
+                if count_try > 10:
                     raise Exception('Something wrong. Failed to open the date field.')
                 return self.load_historical_data_page(link, count_try + 1)
             from_date = '01/01/1980'
             if self.taks.get('from_date', None):
                 from_date = self.taks.get('from_date').strftime('%d/%m/%Y')
-            self.driver.find_element(By.XPATH,xpath).send_keys(from_date)
+            self.enter_date(from_date, xpath)
             if self.taks.get('to_date', None):
                 time.sleep(1)
                 xpath_to = '(//input[@type="date"])[2]'
                 to_date = self.taks.get('to_date').strftime('%d/%m/%Y')
-                self.driver.find_element(By.XPATH,xpath_to).send_keys(to_date)
+                self.enter_date(to_date, xpath_to)
             xpath = "//div[contains(@class, 'cursor-pointer') and contains(@class, 'bg-v2-blue')]"
             self.click_element(xpath)
             try:
@@ -115,6 +119,18 @@ class PageContent(UndetectedDriver):
             self.driver.save_screenshot('error.png')
             self.logger.error(ex)
         return False
+    
+    def enter_date(self, text_date: str, xpath: str):
+        date_el = text_date.split('/')
+        element_from_date = self.driver.find_element(By.XPATH, xpath)
+        element_from_date.send_keys(f"{date_el[0]}/")
+        time.sleep(0.3)
+        element_from_date.send_keys(Keys.ARROW_RIGHT)
+        element_from_date.send_keys(f"{date_el[1]}/")
+        time.sleep(0.3)
+        element_from_date.send_keys(Keys.ARROW_RIGHT)
+        element_from_date.send_keys(f"{date_el[2]}")
+        time.sleep(1)
 
     def click_element(self, xpath: str):
         try:
