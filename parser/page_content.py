@@ -122,14 +122,14 @@ class PageContent(UndetectedDriver):
     
     def enter_date(self, text_date: str, xpath: str):
         date_el = text_date.split('/')
-        element_from_date = self.driver.find_element(By.XPATH, xpath)
-        element_from_date.send_keys(f"{date_el[0]}/")
+        element = self.driver.find_element(By.XPATH, xpath)
+        element.send_keys(f"{date_el[0]}/")
         time.sleep(0.3)
-        element_from_date.send_keys(Keys.ARROW_RIGHT)
-        element_from_date.send_keys(f"{date_el[1]}/")
+        element.send_keys(Keys.ARROW_RIGHT)
+        element.send_keys(f"{date_el[1]}/")
         time.sleep(0.3)
-        element_from_date.send_keys(Keys.ARROW_RIGHT)
-        element_from_date.send_keys(f"{date_el[2]}")
+        element.send_keys(Keys.ARROW_RIGHT)
+        element.send_keys(f"{date_el[2]}")
         time.sleep(1)
 
     def click_element(self, xpath: str):
