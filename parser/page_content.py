@@ -110,7 +110,7 @@ class PageContent(UndetectedDriver):
                     lambda d: len(d.find_elements(By.XPATH, "//table[contains(@class, 'freeze-column-w-1')]//tbody/tr")) != old_count
                 )
             except:
-                if count_try > 4:
+                if count_try > 9:
                     self.logger.info(f'Historical data did not update. Link: {link}')
                 else:
                     return self.load_historical_data_page(link, count_try + 1)
