@@ -106,7 +106,7 @@ class PageContent(UndetectedDriver):
             xpath = "//div[contains(@class, 'cursor-pointer') and contains(@class, 'bg-v2-blue')]"
             self.click_element(xpath)
             try:
-                WebDriverWait(self.driver, 10).until(
+                WebDriverWait(self.driver, 15).until(
                     lambda d: len(d.find_elements(By.XPATH, "//table[contains(@class, 'freeze-column-w-1')]//tbody/tr")) != old_count
                 )
             except:
