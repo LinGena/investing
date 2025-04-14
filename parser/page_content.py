@@ -111,6 +111,7 @@ class PageContent(UndetectedDriver):
                 )
             except:
                 if count_try > 9:
+                    self.driver.save_screenshot('error_history.png')
                     self.logger.info(f'Historical data did not update. Link: {link}')
                 else:
                     return self.load_historical_data_page(link, count_try + 1)
